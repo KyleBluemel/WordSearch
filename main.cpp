@@ -3,6 +3,9 @@
 #include "reader.cpp"
 #include "testprint.cpp"
 #include "wordsearch.h"
+#include "createclass.cpp"
+
+
 
 int main(int argc, char* argv[]){
     if (argc < 2){
@@ -11,20 +14,20 @@ int main(int argc, char* argv[]){
     }
     std::string filename = argv[1];
     auto data = reader(filename);
-    testprint(data);
+    Wordsearch ws = createClass(data);
+    std::cout << ws << "\n";
+    bool length = ws.checkLetterLength();
+    std::cout << length <<"\n";
+    auto positions = ws.checkSearch("code");
+
+    if (positions.empty()) {
+        std::cout << "Word not found\n";
+    } else {
+        for (const auto& [row, col] : positions) {
+            std::cout << "(" << row << ", " << col << ")\n";
+        }
+    }
     return 0;
 
 }
 
-Wordsearch createClass(auto data){
-    for (int i = 0; i < data.length(); i++){
-        try{
-            int width = std::stoi(data[0][0]);
-            int height = std::stoi(data[0][1]);
-        }
-        catch(const std::exception& e){
-            std::cout << e.what() << '\n';
-        }
-        
-    }
-}
