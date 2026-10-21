@@ -20,6 +20,7 @@ Wordsearch createClass(auto data) {
     for (const std::string& word : data[1]) {
         std::string lowerWord = word;
 
+        lowerWord.erase(0, lowerWord.find_first_not_of(" \t\r\n"));
         for (char& letter : lowerWord) {
             letter = std::tolower(static_cast<unsigned char>(letter));
         }

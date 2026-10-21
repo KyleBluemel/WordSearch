@@ -16,6 +16,7 @@ class Wordsearch{
             words = a;
             letters = l;
         }
+        
         friend std::ostream& operator<<(std::ostream& os, const Wordsearch& ws) {
             os << ws.width << " x " << ws.height << "\nwords: ";
 
@@ -34,6 +35,7 @@ class Wordsearch{
 
             return os;
         }
+        
         bool checkLetterLength() {
             if (letters.size() != height) {
                 return false;
@@ -47,6 +49,7 @@ class Wordsearch{
 
             return true;
         }
+        
         std::vector<std::pair<int, int>> checkSearch(std::string word) {
             std::vector<std::pair<int, int>> positions;
 
@@ -100,6 +103,15 @@ class Wordsearch{
             }
 
             return positions;
+        }
+        std::vector<std::vector<std::pair<int, int>>> SolvePuzzle(){
+            std::vector<std::vector<std::pair<int, int>>> output;
+            for (int i = 0; i < words.size(); i++){
+                std::cout << "[" << words[i] << "] "
+                    << checkSearch(words[i]).size() << '\n';
+                output.push_back(checkSearch(words[i]));
+            }
+            return output;
         }
 };
 
