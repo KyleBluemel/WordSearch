@@ -9,12 +9,16 @@ class Wordsearch{
         int height;
         std::vector<std::string> words;
         std::vector<std::vector<char>> letters;
+        std::vector<std::vector<std::pair<int, int>>> solution;
+        
 
         Wordsearch(int w, int h, std::vector<std::string> a, std::vector<std::vector<char>> l ){
             width = w;
             height = h;
             words = a;
             letters = l;
+
+            SolvePuzzle();
         }
         
         friend std::ostream& operator<<(std::ostream& os, const Wordsearch& ws) {
@@ -104,14 +108,10 @@ class Wordsearch{
 
             return positions;
         }
-        std::vector<std::vector<std::pair<int, int>>> SolvePuzzle(){
-            std::vector<std::vector<std::pair<int, int>>> output;
+        void SolvePuzzle(){
             for (int i = 0; i < words.size(); i++){
-                std::cout << "[" << words[i] << "] "
-                    << checkSearch(words[i]).size() << '\n';
-                output.push_back(checkSearch(words[i]));
+                solution.push_back(checkSearch(words[i]));
             }
-            return output;
         }
 };
 
