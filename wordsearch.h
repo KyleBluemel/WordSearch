@@ -3,6 +3,7 @@
 #include <vector>
 #include <utility>
 #include <string>
+
 class Wordsearch{
     public:
         int width;
@@ -113,7 +114,8 @@ class Wordsearch{
                 solution.push_back(checkSearch(words[i]));
             }
         }
-};
+
+    };
 
 
 #endif
