@@ -2,8 +2,16 @@
 #define WORDSEARCH_H
 #include <vector>
 #include <utility>
+#include <iostream>
 #include <string>
+#include <cstddef>
 
+
+std::vector<std::vector<char>> createLetterList(int h, int w, std::vector<std::string> Words, const std::vector<std::string>& dictionary);
+
+std::vector<std::string> generateWords(const std::vector<std::string>& dictionary, int numberOfWords);
+
+std::vector<std::string> createDictionary(int biggestPossible);
 class Wordsearch{
     public:
         int width;
@@ -25,14 +33,14 @@ class Wordsearch{
         friend std::ostream& operator<<(std::ostream& os, const Wordsearch& ws) {
             os << ws.width << " x " << ws.height << "\nwords: ";
 
-            for (int i = 0; i < ws.words.size(); i++) {
+            for (size_t i = 0; i < ws.words.size(); i++) {
                 os << ws.words[i] << " ";
             }
 
             os << "\nletters:\n";
 
-            for (int i = 0; i < ws.letters.size(); i++) {
-                for (int j = 0; j < ws.letters[i].size(); j++) {
+            for (size_t i = 0; i < ws.letters.size(); i++) {
+                for (size_t j = 0; j < ws.letters[i].size(); j++) {
                     os << ws.letters[i][j] << " ";
                 }
                 os << "\n";
@@ -42,12 +50,12 @@ class Wordsearch{
         }
         
         bool checkLetterLength() {
-            if (letters.size() != height) {
+            if (letters.size() != static_cast<size_t>(height)) {
                 return false;
             }
 
             for (const auto& row : letters) {
-                if (row.size() != width) {
+                if (row.size() != static_cast<size_t>(width)) {
                     return false;
                 }
             }
@@ -80,7 +88,7 @@ class Wordsearch{
 
                         int k = 0;
 
-                        while (k < word.size()) {
+                        while (static_cast<size_t>(k) < word.size()) {
                             int row = i + k * rowStep;
                             int col = j + k * colStep;
 
@@ -93,8 +101,8 @@ class Wordsearch{
                             k++;
                         }
 
-                        if (k == word.size()) {
-                            for (int n = 0; n < word.size(); n++) {
+                        if (static_cast<size_t>(k) == word.size()) {
+                            for (size_t n = 0; n < word.size(); n++) {
                                 positions.push_back({
                                     i + n * rowStep,
                                     j + n * colStep
@@ -110,7 +118,7 @@ class Wordsearch{
             return positions;
         }
         void SolvePuzzle(){
-            for (int i = 0; i < words.size(); i++){
+            for (size_t i = 0; i < words.size(); i++){
                 solution.push_back(checkSearch(words[i]));
             }
         }
