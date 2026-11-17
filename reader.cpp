@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 
-//takes in a csv, splits file into items and returns items
+//takes in a csv, splits file into items and returns items only handles non frontend running
 std::vector<std::vector<std::string>> reader(const std::string& filename){
     std::ifstream file(filename);
     std::vector<std::vector<std::string>> data;

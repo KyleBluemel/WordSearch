@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <cctype>
+
+//backend implementation only
 Wordsearch createClass(auto data) {
     int width;
     int height;

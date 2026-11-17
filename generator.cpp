@@ -14,6 +14,8 @@ std::mt19937 gen(rd());
 std::vector<char> alpha = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
 bool makesUnwantedWord( const std::vector<std::vector<char>>& letters, int row, int col, const std::unordered_set<std::string>& dictionary, const std::unordered_set<std::string>& allowedWords);
+
+//main functions that generates a word search, will call other functions throughout.
 Wordsearch generateWS(int w, int h, std::vector<std::string> Words = {}, int numberOfWords = 0){
     int biggestPossible;
     if (w > h){
@@ -43,6 +45,9 @@ Wordsearch generateWS(int w, int h, std::vector<std::string> Words = {}, int num
 
     return (Wordsearch(w, h, Words, letters));
 }
+
+/*This function creates the actual vector of letters, that will make the word search it runs makes unwanted words to make sure there
+is no words from our dictionary in the wordsearch*/
 std::vector<std::vector<char>> createLetterList(int h, int w, std::vector<std::string>Words, const std::vector<std::string>& dictionary){
     std::sort(Words.begin(), Words.end(),
         [](const std::string& a, const std::string& b) {
@@ -57,7 +62,9 @@ std::vector<std::vector<char>> createLetterList(int h, int w, std::vector<std::s
             };
     for (const auto& word : Words){
         bool wordInserted = false;
-        while(!wordInserted){
+        int attempts = 0;
+        while(!wordInserted && attempts < 10000){
+            ++attempts;
             std::uniform_int_distribution<int> distH(0, h-1);
             std::uniform_int_distribution<int> distW(0, w-1);
             int posH = distH(gen);
@@ -88,6 +95,9 @@ std::vector<std::vector<char>> createLetterList(int h, int w, std::vector<std::s
                 wordInserted = true;
             }
         }
+        if (!wordInserted){
+            throw std::runtime_error("Unable to place all words in the requested grid size.");
+        }
     }
     std::unordered_set<std::string> dictionarySet(dictionary.begin(), dictionary.end());
     std::unordered_set<std::string> allowedWords(Words.begin(), Words.end());
@@ -116,9 +126,14 @@ std::vector<std::vector<char>> createLetterList(int h, int w, std::vector<std::s
     return letterList;
 }
 
+//A function to create the list of words if none are given, checks to make sure no duplicates
 std::vector<std::string> generateWords(const std::vector<std::string>& dictionary, int numberOfWords){
     std::vector<std::string> words;
     std::unordered_set<std::string> selected;
+
+    if (dictionary.empty() || numberOfWords < 1 || static_cast<size_t>(numberOfWords)>dictionary.size()){
+        throw std::runtime_error(std::format("Number of words is not valid, needs to be between 1-{}", dictionary.size()));
+    }
     
 
     std::uniform_int_distribution<int> dist(
@@ -134,11 +149,19 @@ std::vector<std::string> generateWords(const std::vector<std::string>& dictionar
     return words;
 }
 
+/*This is reading the data from Data/words_alpha.txt and 
+returns a big vector with all the words that are bigger than 3 letters and less than or equal to the biggest possible*/
 std::vector<std::string> createDictionary(int biggestPossible){
     std::string line;
-    std::ifstream file("data/words_alpha.txt");
+    std::ifstream file("Data/words_alpha.txt");
+    if (!file){
+        throw std::runtime_error("Unable to open Data/words_alpha.txt.");
+    }
     std::vector<std::string> data;
     while (std::getline(file, line)){
+        if (!line.empty() && line.back() == '\r'){
+            line.pop_back();
+        }
         if (line.length() <= static_cast<size_t>(biggestPossible)){
             if (line.length() > 3){
                 data.push_back(line);
@@ -148,7 +171,7 @@ std::vector<std::string> createDictionary(int biggestPossible){
     return data;
 }
 
-
+//This function is checking to see if there is a word that is in our dictionary but not in the given allowed words
 bool makesUnwantedWord(const std::vector<std::vector<char>>& letters, int row, int col, const std::unordered_set<std::string>& dictionary, const std::unordered_set<std::string>& allowedWords){
     int directions[4][2] = {
         {0, 1}, {1, 0}, {1, 1}, {1, -1}
